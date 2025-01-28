@@ -1,0 +1,21 @@
+export const standardTheme = {
+    purple: '#9758a6',
+    darkPurple: '#5c2669',
+    secondDarkPurple: '#6f357c',
+    orange: '#ff8c05',
+    mainBlack: '#1f1f1f',
+    black: '#363636',
+    secondBlack: '#484848',
+    darkGray: '#625e5e',
+    lightGray: '#cdcdcd',
+    red: '#ff3205',
+    darkRed: '#cf3057',
+    white: '#fff',
+    secondWhite: '#f0f0f0',
+    darkWhite: '#f4f4f4',
+    green: '#61a120',
+    gradientBlack: 'linear-gradient(90deg, rgba(19,13,20,1) 0%, rgba(69,57,48,1) 100%)',
+
+    roadRageFont: '"Road Rage", sans-serif',
+    poppinsFont: '"Poppins", sans-serif',
+}
