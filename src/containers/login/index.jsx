@@ -14,6 +14,7 @@ export function Login() {
     const navigate = useNavigate();
     const { putUserData } = useUser();
 
+    // 📌 Validação do formulário com Yup
     const schema = yup.object({
         email: yup.string().email('Digite um Email válido!').required('O Email é obrigatório!'),
         password: yup.string().min(6, 'A senha deve ter pelo menos 6 caracteres!').required('Digite uma senha!'),
@@ -25,43 +26,49 @@ export function Login() {
 
     const onSubmit = async (data) => {
         try {
-            const { data: userData } = await toast.promise(
-                api.post('/session', {
-                    email: data.email,
-                    password: data.password,
-                }),
-                {
-                    pending: 'Autenticando seus dados!',
-                    success: {
-                        render() {
-                            setTimeout(() => {
-                                if (userData?.admin) {
-                                    navigate('/admin/pedidos');
-                                } else {
-                                    navigate('/');
-                                }
-                            }, 2000);
-                            return 'Login efetuado com sucesso! 👌';
-                        },
-                    },
-                    error: 'Acesso negado, por favor verifique seu Email e senha! 🤯',
-                }
-            );
-
-            // Atualiza dados do usuário no contexto
+            // 📌 Requisição para autenticação com API
+            const response = await api.post('/session', {
+                email: data.email,
+                password: data.password,
+            });
+    
+            // Exibir toast apenas para sucesso do login
+            toast.success('Login efetuado com sucesso! 👌');
+    
+            const userData = response.data;
+    
+            // 📌 Salva o token de forma segura no localStorage
+            localStorage.setItem("devburger_token", userData.token);
+            
+            // 📌 Atualiza contexto do usuário com os dados corretos
             putUserData(userData);
+    
+            // 📌 Navegação segura após sucesso
+            setTimeout(() => {
+                navigate(userData.admin ? '/admin/pedidos' : '/');
+            }, 1000);
+            
         } catch (error) {
             console.error("Erro ao fazer login:", error);
+    
+            // 📌 Se for erro da API, exibir mensagem amigável
+            if (error.response) {
+                toast.error(error.response.data.error || "Acesso negado, verifique seu Email e senha! 🤯");
+            } else {
+                // Aqui, trata erros de conexão
+                toast.error("Erro de conexão. Verifique sua internet.");
+            }
         }
     };
-
+    
     return (
         <Container>
             <LeftContainer>
                 <img src={Logo} alt="logo-devburger" />
             </LeftContainer>
             <RightContainer>
-                <Title>Olá, seja bem vindo(a) ao <span>Dev Burguer!</span>
+                <Title>
+                    Olá, seja bem-vindo(a) ao <span>Dev Burguer!</span>
                     <br />
                     Acesse com seu<span> Login e senha.</span>
                 </Title>

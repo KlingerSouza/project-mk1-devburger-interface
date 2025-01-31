@@ -27,6 +27,8 @@ export function Orders() {
             try {
                 setLoading(true);
                 const { data } = await api.get('orders');
+                console.log(data);
+
                 setFilteredOrders(data);
                 setOrders(data);
             } catch (error) {
