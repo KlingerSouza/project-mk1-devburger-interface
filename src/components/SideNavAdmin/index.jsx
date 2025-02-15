@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { navLinks } from "./navLinks";
 import Logo from '../../assets/logo.svg';
 import { SignOut } from "@phosphor-icons/react";
@@ -9,24 +10,28 @@ export function SideNavAdmin() {
     const { logout } = useUser();
     const { pathname } = useResolvedPath();
 
+    // Memoriza os links para evitar re-renderizações desnecessárias
+    const renderedLinks = useMemo(() =>
+        navLinks.map(link => (
+            <NavLink key={link.id} to={link.path} $isActive={pathname === link.path}>
+                {link.icon && <link.icon size={24} />}
+                <span>{link.label}</span>
+            </NavLink>
+        )),
+        [pathname]
+    );
 
     return (
         <Container>
             <img src={Logo} alt="Devlogo" />
+            
             <NavLinkContainer>
-                {navLinks.map(link => (
-                    <NavLink key={link.id} 
-                    to={link.path}
-                    $isActive={pathname=== link.path}
-                    >
-                        {link.icon}
-                        <span>{link.label}</span>
-                    </NavLink>
-                ))}
+                {renderedLinks}
             </NavLinkContainer>
+
             <Footer>
                 <NavLink to='/login' onClick={logout}>
-                    <SignOut />
+                    <SignOut size={24} />
                     <span>Sair</span>
                 </NavLink>
             </Footer>

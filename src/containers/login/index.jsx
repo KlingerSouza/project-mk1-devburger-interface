@@ -16,8 +16,13 @@ export function Login() {
 
     // 📌 Validação do formulário com Yup
     const schema = yup.object({
-        email: yup.string().email('Digite um Email válido!').required('O Email é obrigatório!'),
-        password: yup.string().min(6, 'A senha deve ter pelo menos 6 caracteres!').required('Digite uma senha!'),
+        email: yup.string().email('Digite um email válido!').required('O email é obrigatório!'),
+        password: yup.string()
+            .min(6, 'A senha deve ter pelo menos 6 caracteres!')
+            .matches(/[a-zA-Z]/, 'A senha deve conter pelo menos uma letra.')
+            .matches(/\d/, 'A senha deve conter pelo menos um número.')
+            .matches(/[!@#$%^&*(),.?":{}|<>]/, 'A senha deve conter pelo menos um caractere especial.')
+            .required('Digite uma senha!'),
     }).required();
 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -53,7 +58,7 @@ export function Login() {
     
             // 📌 Se for erro da API, exibir mensagem amigável
             if (error.response) {
-                toast.error(error.response.data.error || "Acesso negado, verifique seu Email e senha! 🤯");
+                toast.error(error.response.data.error || "Acesso negado, verifique seu email e senha! 🤯");
             } else {
                 // Aqui, trata erros de conexão
                 toast.error("Erro de conexão. Verifique sua internet.");
